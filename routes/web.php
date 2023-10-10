@@ -29,13 +29,14 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
+Route::get('/create-super-admin-account', [MainController::class, 'createSuperAdminAccount']);
+
+
 Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    Route::get('/create-super-admin-account', [MainController::class, 'createSuperAdminAccount']);
 
     Route::get('/filing-plan', [MainController::class, 'filingPlan'])->name('filing.plan');
 
@@ -53,6 +54,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/view-file-pdf/{file}', [ArchiveController::class, 'viewPDF'])->name('view.pdf');
 
     Route::resource('archivists', UserController::class);
+    Route::get('/archivists-profile/{id}', [UserController::class, 'getProfile'])->name('getProfile');
+    Route::put('/archivists-profile-update/{id}', [UserController::class, 'updateProfile'])->name('updateProfile');
 
     Route::resource('directions', DirectionController::class);
 

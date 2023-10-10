@@ -139,6 +139,25 @@ class UserController extends Controller
         return redirect()->route('archivists.index');
     }
 
+    public function getProfile(int $id)
+    {
+        $archivist = User::findOrFail(intval($id));
+
+        return view('archivistes.archivist-profile', [
+            'archivist' => $archivist
+        ]);
+    }
+
+    public function enableOrDisable(int $id)
+    {
+        $archivist = User::where('type', '<>', 'Super Administrateur')->findOrfail(intval($id));
+
+        $archivist->status ? $archivist->update(['status' => false]) : $archivist->update(['status' => true]);
+
+        session()->flash('message', $archivist->status ? 'Compte activé avec succès' : 'Compte désactivé avec succès');
+        return redirect()->route('archivists.index');
+    }
+
     public function getArhivistsWhoDoesntHaveDirection()
     {
         $archivists = User::where('type', '<>', 'Super Administrateur')
@@ -152,4 +171,14 @@ class UserController extends Controller
         ]);
     }
 
+    public function destroy(int $id)
+    {
+        $archivist = User::where('type', '<>', 'Super Administrateur')->findOrfail(intval($id));
+        if ($archivist) {
+            $archivist->delete();
+        }
+
+        session()->flash('message', $archivist->status ? 'Compte activé avec succès' : 'Compte désactivé avec succès');
+        return redirect()->route('archivists.index');
+    }
 }
